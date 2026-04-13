@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Products - Fashion Mart{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="margin-bottom: 2rem;">Our Products</h1>
+    
+    <!-- Filters -->
+    <div class="filters">
+        <form method="GET" action="{{ url_for('products') }}">
+            <div class="filter-group">
+                <select name="category" onchange="this.form.submit()">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+                
+                <input type="text" name="search" placeholder="Search products..." value="{{ search_term or '' }}">
+                
+                <button type="submit" class="btn">Search</button>
+                {% if selected_category or search_term %}
+                    <a href="{{ url_for('products') }}" class="btn btn-secondary">Clear Filters</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- Products Grid -->
+    {% if products %}
+        <div class="product-grid">
+            {% for product in products %}
+                <div class="product-card" onclick="window.location.href='{{ url_for('product_detail', product_id=product.ProductID) }}'">
+                    <img src="{{ product.ImageURL }}" alt="{{ product.ProductName }}" class="product-image">
+                    <div class="product-info">
+                        <div class="product-category">{{ product.Category }}</div>
+                        <h3 class="product-name">{{ product.ProductName }}</h3>
+                        <div class="product-rating">
+                            ⭐ {{ "%.1f"|format(product.Rating) }} / 5.0
+                        </div>
+                        <div class="product-price">৳{{ "{:,.2f}".format(product.Price) }}</div>
+                        <div class="product-stock">
+                            {% if product.Quantity > 0 %}
+                                <span style="color: #4caf50;">✓ In Stock ({{ product.Quantity }} available)</span>
+                            {% else %}
+                                <span style="color: #f44336;">✗ Out of Stock</span>
+                            {% endif %}
+                        </div>
+                        {% if product.Embroidery and product.Embroidery != 'None' %}
+                            <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #9c27b0;">
+                                🎨 {{ product.Embroidery }}
+                            </div>
+                        {% endif %}
+                        <button class="btn" style="width: 100%; margin-top: 1rem;" 
+                                onclick="event.stopPropagation(); addToCart({{ product.ProductID }})"
+                                {% if product.Quantity == 0 %}disabled{% endif %}>
+                            {% if product.Quantity > 0 %}
+                                Add to Cart
+                            {% else %}
+                                Out of Stock
+                            {% endif %}
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 3rem;">
+            <h2>No products found</h2>
+            <p>Try adjusting your filters or search term</p>
+            <a href="{{ url_for('products') }}" class="btn">View All Products</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function addToCart(productId) {
+    {% if not session.get('customer_id') %}
+        alert('Please login to add items to cart');
+        window.location.href = '{{ url_for('login') }}';
+        return;
+    {% endif %}
+    
+    fetch('/api/cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            product_id: productId,
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Product added to cart!');
+            updateCartCount();
+        } else {
+            alert(data.error || 'Failed to add to cart');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred');
+    });
+}
+
+// Update cart count on page load
+document.addEventListener('DOMContentLoaded', updateCartCount);
+</script>
+{% endblock %}

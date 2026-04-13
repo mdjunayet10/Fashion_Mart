@@ -1,0 +1,105 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin Dashboard - Fashion Mart{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1>🎯 Admin Dashboard</h1>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        <div class="card" style="padding: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <div style="font-size: 2.5rem; font-weight: bold;">{{ stats.customers }}</div>
+            <div style="opacity: 0.9;">Total Customers</div>
+        </div>
+        
+        <div class="card" style="padding: 1.5rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+            <div style="font-size: 2.5rem; font-weight: bold;">{{ stats.products }}</div>
+            <div style="opacity: 0.9;">Total Products</div>
+        </div>
+        
+        <div class="card" style="padding: 1.5rem; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+            <div style="font-size: 2.5rem; font-weight: bold;">{{ stats.orders }}</div>
+            <div style="opacity: 0.9;">Total Orders</div>
+        </div>
+        
+        <div class="card" style="padding: 1.5rem; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">
+            <div style="font-size: 2.5rem; font-weight: bold;">{{ stats.delivery_men }}</div>
+            <div style="opacity: 0.9;">Delivery Staff</div>
+        </div>
+        
+        <div class="card" style="padding: 1.5rem; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">
+            <div style="font-size: 2.5rem; font-weight: bold;">৳{{ "%.2f"|format(stats.revenue) }}</div>
+            <div style="opacity: 0.9;">Total Revenue</div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
+        <h2 style="margin: 0 0 1rem 0;">🚀 Quick Actions</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <a href="{{ url_for('admin_customers') }}" class="btn" style="text-decoration: none; text-align: center;">
+                👥 Manage Customers
+            </a>
+            <a href="{{ url_for('admin_products') }}" class="btn" style="text-decoration: none; text-align: center;">
+                📦 Manage Products
+            </a>
+            <a href="{{ url_for('admin_orders') }}" class="btn" style="text-decoration: none; text-align: center;">
+                📋 Manage Orders
+            </a>
+            <a href="{{ url_for('admin_delivery') }}" class="btn" style="text-decoration: none; text-align: center;">
+                🚚 Manage Delivery
+            </a>
+        </div>
+    </div>
+    
+    <!-- Recent Orders -->
+    <div class="card" style="padding: 1.5rem;">
+        <h2 style="margin: 0 0 1rem 0;">📊 Recent Orders</h2>
+        {% if recent_orders|length == 0 %}
+        <p style="color: #999; text-align: center; padding: 2rem;">No orders yet</p>
+        {% else %}
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #f5f5f5; border-bottom: 2px solid #ddd;">
+                    <th style="padding: 1rem; text-align: left;">Order ID</th>
+                    <th style="padding: 1rem; text-align: left;">Customer</th>
+                    <th style="padding: 1rem; text-align: left;">Date</th>
+                    <th style="padding: 1rem; text-align: right;">Amount</th>
+                    <th style="padding: 1rem; text-align: center;">Payment</th>
+                    <th style="padding: 1rem; text-align: center;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in recent_orders %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 1rem;"><strong>#{{ order.OrderID }}</strong></td>
+                    <td style="padding: 1rem;">{{ order.CustomerName }}</td>
+                    <td style="padding: 1rem;">
+                        <small>{{ order.OrderDate.strftime('%b %d, %Y') }}</small>
+                    </td>
+                    <td style="padding: 1rem; text-align: right;">
+                        <strong>৳{{ "%.2f"|format(order.TotalAmount) }}</strong>
+                    </td>
+                    <td style="padding: 1rem; text-align: center;">
+                        <span style="padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;
+                              background: {% if order.PaymentStatus == 'Paid' %}#d4edda; color: #155724{% else %}#f8d7da; color: #721c24{% endif %};">
+                            {{ order.PaymentStatus }}
+                        </span>
+                    </td>
+                    <td style="padding: 1rem; text-align: center;">
+                        <span style="padding: 0.35rem 0.75rem; border-radius: 12px; font-size: 0.85rem;
+                              background: {% if order.OrderStatus == 'Complete' %}#d4edda; color: #155724{% elif order.OrderStatus == 'Delivered' %}#d1ecf1; color: #0c5460{% elif order.OrderStatus == 'Pending' %}#fff3cd; color: #856404{% else %}#e2e3e5; color: #383d41{% endif %};">
+                            {{ order.OrderStatus }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

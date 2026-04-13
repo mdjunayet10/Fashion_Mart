@@ -1,0 +1,491 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Delivery Management - Fashion Mart Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-radius: 10px;
+    }
+    
+    .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #4facfe;
+    }
+    
+    .stat-label {
+        color: #666;
+        margin-top: 0.5rem;
+    }
+    
+    .delivery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .delivery-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .delivery-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+    
+    .delivery-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .delivery-name {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .delivery-id {
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .status-badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    
+    .status-active {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .status-inactive {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .delivery-info {
+        margin-bottom: 1rem;
+    }
+    
+    .info-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        color: #555;
+    }
+    
+    .info-row i {
+        width: 20px;
+        margin-right: 0.5rem;
+        color: #4facfe;
+    }
+    
+    .performance-stats {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-row:last-child {
+        margin-bottom: 0;
+    }
+    
+    .stat-key {
+        color: #666;
+        font-size: 0.9rem;
+    }
+    
+    .stat-val {
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .delivery-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .btn-action {
+        flex: 1;
+        padding: 0.6rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+    }
+    
+    .btn-view {
+        background: #17a2b8;
+        color: white;
+    }
+    
+    .btn-view:hover {
+        background: #138496;
+    }
+    
+    .btn-edit {
+        background: #ffc107;
+        color: #212529;
+    }
+    
+    .btn-edit:hover {
+        background: #e0a800;
+    }
+    
+    .back-btn {
+        background: white;
+        color: #00f2fe;
+        padding: 0.75rem 1.5rem;
+        border: 2px solid white;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+    }
+    
+    .back-btn:hover {
+        background: transparent;
+        color: white;
+    }
+    
+    .btn-add-delivery {
+        background: #28a745;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s;
+        margin-bottom: 2rem;
+    }
+    
+    .btn-add-delivery:hover {
+        background: #218838;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1 style="margin: 0 0 0.5rem 0;">🚚 Delivery Personnel Management</h1>
+            <p style="margin: 0; opacity: 0.9;">Manage delivery staff and track performance</p>
+        </div>
+        <a href="{{ url_for('admin_dashboard') }}" class="back-btn">← Back to Dashboard</a>
+    </div>
+</div>
+
+<div class="stats-bar">
+    <div class="stat-card">
+        <div class="stat-value">{{ delivery_men|length }}</div>
+        <div class="stat-label">Total Delivery Staff</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ delivery_men|selectattr('Status', 'equalto', 'Active')|list|length }}</div>
+        <div class="stat-label">Active Staff</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ delivery_men|sum(attribute='AssignedOrders') }}</div>
+        <div class="stat-label">Total Assigned</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ delivery_men|sum(attribute='CompletedDeliveries') }}</div>
+        <div class="stat-label">Completed Deliveries</div>
+    </div>
+</div>
+
+<button class="btn-add-delivery" onclick="openAddModal()">
+    <i class="fas fa-user-plus"></i> Add New Delivery Person
+</button>
+
+<div class="delivery-grid">
+    {% for delivery in delivery_men %}
+    <div class="delivery-card">
+        <div class="delivery-header">
+            <div>
+                <div class="delivery-name">{{ delivery.Name }}</div>
+                <div class="delivery-id">ID: {{ delivery.DeliveryManID }}</div>
+            </div>
+            <span class="status-badge {% if delivery.Status == 'Active' %}status-active{% else %}status-inactive{% endif %}">
+                {{ delivery.Status }}
+            </span>
+        </div>
+        
+        <div class="delivery-info">
+            <div class="info-row">
+                <i class="fas fa-user"></i>
+                <span>{{ delivery.Username }}</span>
+            </div>
+            <div class="info-row">
+                <i class="fas fa-envelope"></i>
+                <span>{{ delivery.Email }}</span>
+            </div>
+            <div class="info-row">
+                <i class="fas fa-phone"></i>
+                <span>{{ delivery.Phone }}</span>
+            </div>
+            <div class="info-row">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>{{ delivery.Address or 'No address' }}</span>
+            </div>
+            <div class="info-row">
+                <i class="fas fa-motorcycle"></i>
+                <span>{{ delivery.VehicleType or 'Not specified' }}</span>
+            </div>
+        </div>
+        
+        <div class="performance-stats">
+            <div class="stat-row">
+                <span class="stat-key">Assigned Orders:</span>
+                <span class="stat-val">{{ delivery.AssignedOrders }}</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-key">Completed:</span>
+                <span class="stat-val">{{ delivery.CompletedDeliveries }}</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-key">Success Rate:</span>
+                <span class="stat-val">
+                    {% if delivery.AssignedOrders > 0 %}
+                        {{ "%.1f"|format((delivery.CompletedDeliveries / delivery.AssignedOrders * 100)) }}%
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        
+        <div class="delivery-actions">
+            <button class="btn-action btn-view" onclick="viewDeliveryOrders({{ delivery.DeliveryManID }})">
+                <i class="fas fa-list"></i> View Orders
+            </button>
+            <button class="btn-action btn-edit" onclick="alert('Edit feature - Coming soon!')">
+                <i class="fas fa-edit"></i> Edit
+            </button>
+        </div>
+    </div>
+    {% else %}
+    <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: 10px; color: #999;">
+        <i class="fas fa-users" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+        <p>No delivery personnel found. Click "Add New Delivery Person" to get started!</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Add Delivery Person Modal -->
+<div id="addDeliveryModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="background: white; max-width: 600px; margin: 2rem auto; padding: 2rem; border-radius: 10px; max-height: 85vh; overflow-y: auto;">
+        <h2 style="margin-bottom: 1.5rem;">Add New Delivery Person</h2>
+        <form id="addDeliveryForm">
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Full Name *</label>
+                <input type="text" id="deliveryName" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Username *</label>
+                <input type="text" id="deliveryUsername" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Password *</label>
+                <input type="password" id="deliveryPassword" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Email *</label>
+                <input type="email" id="deliveryEmail" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Phone *</label>
+                <input type="tel" id="deliveryPhone" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Address</label>
+                <textarea id="deliveryAddress" rows="2" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; resize: vertical;"></textarea>
+            </div>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Vehicle Type *</label>
+                <select id="deliveryVehicle" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+                    <option value="">Select Vehicle Type</option>
+                    <option value="Motorcycle">Motorcycle</option>
+                    <option value="Bicycle">Bicycle</option>
+                    <option value="Van">Van</option>
+                    <option value="Car">Car</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" style="flex: 1; padding: 0.75rem; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem;">
+                    <i class="fas fa-save"></i> Add Delivery Person
+                </button>
+                <button type="button" onclick="closeAddModal()" style="flex: 1; padding: 0.75rem; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem;">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Orders Modal -->
+<div id="ordersModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="background: white; max-width: 800px; margin: 2rem auto; padding: 2rem; border-radius: 10px; max-height: 85vh; overflow-y: auto;">
+        <h2 id="modalTitle">Delivery Orders</h2>
+        <div id="modalContent"></div>
+        <button onclick="closeOrdersModal()" style="margin-top: 1rem; padding: 0.75rem 2rem; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">Close</button>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function openAddModal() {
+        document.getElementById('addDeliveryForm').reset();
+        document.getElementById('addDeliveryModal').style.display = 'block';
+    }
+    
+    function closeAddModal() {
+        document.getElementById('addDeliveryModal').style.display = 'none';
+    }
+    
+    // Handle add delivery form submission
+    document.getElementById('addDeliveryForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const deliveryData = {
+            name: document.getElementById('deliveryName').value,
+            username: document.getElementById('deliveryUsername').value,
+            password: document.getElementById('deliveryPassword').value,
+            email: document.getElementById('deliveryEmail').value,
+            phone: document.getElementById('deliveryPhone').value,
+            address: document.getElementById('deliveryAddress').value,
+            vehicle_type: document.getElementById('deliveryVehicle').value
+        };
+        
+        fetch('/admin/api/add-delivery-person', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(deliveryData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Delivery person added successfully!');
+                location.reload();
+            } else {
+                alert('Error: ' + (data.error || 'Failed to add delivery person'));
+            }
+        })
+        .catch(error => {
+            alert('Error adding delivery person');
+            console.error(error);
+        });
+    });
+    
+    function viewDeliveryOrders(deliveryManId) {
+        fetch(`/admin/api/delivery-orders/${deliveryManId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.orders && data.orders.length > 0) {
+                    let content = '<table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">';
+                    content += '<thead><tr style="background: #f8f9fa;">';
+                    content += '<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #dee2e6;">Order ID</th>';
+                    content += '<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #dee2e6;">Customer</th>';
+                    content += '<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #dee2e6;">Amount</th>';
+                    content += '<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #dee2e6;">Status</th>';
+                    content += '<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #dee2e6;">Payment</th>';
+                    content += '</tr></thead><tbody>';
+                    
+                    data.orders.forEach(order => {
+                        content += '<tr style="border-bottom: 1px solid #e9ecef;">';
+                        content += `<td style="padding: 0.75rem;">#${order.OrderID}</td>`;
+                        content += `<td style="padding: 0.75rem;">${order.CustomerName}</td>`;
+                        content += `<td style="padding: 0.75rem;">৳${parseFloat(order.TotalAmount).toFixed(2)}</td>`;
+                        content += `<td style="padding: 0.75rem;"><span style="padding: 0.25rem 0.75rem; border-radius: 15px; background: ${order.OrderStatus === 'Complete' ? '#d4edda' : '#fff3cd'}; color: ${order.OrderStatus === 'Complete' ? '#155724' : '#856404'};">${order.OrderStatus}</span></td>`;
+                        content += `<td style="padding: 0.75rem;"><span style="padding: 0.25rem 0.75rem; border-radius: 15px; background: ${order.PaymentStatus === 'Paid' ? '#d4edda' : '#f8d7da'}; color: ${order.PaymentStatus === 'Paid' ? '#155724' : '#721c24'};">${order.PaymentStatus}</span></td>`;
+                        content += '</tr>';
+                    });
+                    
+                    content += '</tbody></table>';
+                    document.getElementById('modalTitle').textContent = `Orders for ${data.delivery_man_name}`;
+                    document.getElementById('modalContent').innerHTML = content;
+                } else {
+                    document.getElementById('modalTitle').textContent = 'No Orders';
+                    document.getElementById('modalContent').innerHTML = '<p style="text-align: center; color: #999; padding: 2rem;">No orders assigned to this delivery person yet.</p>';
+                }
+                document.getElementById('ordersModal').style.display = 'block';
+            })
+            .catch(error => {
+                alert('Error loading orders');
+                console.error(error);
+            });
+    }
+    
+    function closeOrdersModal() {
+        document.getElementById('ordersModal').style.display = 'none';
+    }
+    
+    // Close modals on outside click
+    document.getElementById('addDeliveryModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeAddModal();
+        }
+    });
+    
+    document.getElementById('ordersModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeOrdersModal();
+        }
+    });
+</script>
+{% endblock %}

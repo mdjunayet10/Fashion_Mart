@@ -1,0 +1,325 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Customer Management - Fashion Mart Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-radius: 10px;
+    }
+    
+    .stats-bar {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-item {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        flex: 1;
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #667eea;
+    }
+    
+    .stat-label {
+        color: #666;
+        margin-top: 0.5rem;
+    }
+    
+    .customers-table {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .table-header {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-bottom: 2px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .search-box {
+        position: relative;
+        width: 300px;
+    }
+    
+    .search-box input {
+        width: 100%;
+        padding: 0.75rem 2.5rem 0.75rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 0.95rem;
+    }
+    
+    .search-box i {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    thead {
+        background: #f8f9fa;
+    }
+    
+    th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        color: #495057;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    tbody tr:hover {
+        background: #f8f9fa;
+    }
+    
+    .badge {
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .badge-success {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .badge-warning {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .badge-info {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    .btn-action {
+        padding: 0.4rem 1rem;
+        margin: 0 0.25rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+    }
+    
+    .btn-view {
+        background: #17a2b8;
+        color: white;
+    }
+    
+    .btn-view:hover {
+        background: #138496;
+    }
+    
+    .btn-edit {
+        background: #ffc107;
+        color: #212529;
+    }
+    
+    .btn-edit:hover {
+        background: #e0a800;
+    }
+    
+    .back-btn {
+        background: white;
+        color: #667eea;
+        padding: 0.75rem 1.5rem;
+        border: 2px solid white;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+    }
+    
+    .back-btn:hover {
+        background: transparent;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1 style="margin: 0 0 0.5rem 0;">👥 Customer Management</h1>
+            <p style="margin: 0; opacity: 0.9;">Manage all registered customers</p>
+        </div>
+        <a href="{{ url_for('admin_dashboard') }}" class="back-btn">← Back to Dashboard</a>
+    </div>
+</div>
+
+<div class="stats-bar">
+    <div class="stat-item">
+        <div class="stat-value">{{ customers|length }}</div>
+        <div class="stat-label">Total Customers</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-value">{{ customers|selectattr('TotalOrders', 'gt', 0)|list|length }}</div>
+        <div class="stat-label">Active Customers</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-value">৳{{ "%.2f"|format(customers|sum(attribute='TotalSpent')) }}</div>
+        <div class="stat-label">Total Revenue</div>
+    </div>
+</div>
+
+<div class="customers-table">
+    <div class="table-header">
+        <h2 style="margin: 0;">All Customers</h2>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search customers...">
+            <i class="fas fa-search"></i>
+        </div>
+    </div>
+    
+    <table id="customersTable">
+        <thead>
+            <tr>
+                <th>Customer ID</th>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Total Orders</th>
+                <th>Total Spent</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+            <tr>
+                <td>#{{ customer.CustomerID }}</td>
+                <td><strong>{{ customer.Username }}</strong></td>
+                <td>{{ customer.Name }}</td>
+                <td>{{ customer.Email }}</td>
+                <td>{{ customer.Phone or 'N/A' }}</td>
+                <td>
+                    <span class="badge badge-info">{{ customer.TotalOrders }} orders</span>
+                </td>
+                <td><strong>৳{{ "%.2f"|format(customer.TotalSpent) }}</strong></td>
+                <td>
+                    {% if customer.TotalOrders > 0 %}
+                        <span class="badge badge-success">Active</span>
+                    {% else %}
+                        <span class="badge badge-warning">New</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <button class="btn-action btn-view" onclick="viewCustomer({{ customer.CustomerID }})">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="9" style="text-align: center; padding: 2rem; color: #999;">
+                    No customers found
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Customer Details Modal -->
+<div id="customerModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="background: white; max-width: 600px; margin: 2rem auto; padding: 2rem; border-radius: 10px; max-height: 80vh; overflow-y: auto;">
+        <h2 id="modalTitle">Customer Details</h2>
+        <div id="modalContent"></div>
+        <button onclick="closeModal()" style="margin-top: 1rem; padding: 0.75rem 2rem; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">Close</button>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        const searchValue = this.value.toLowerCase();
+        const table = document.getElementById('customersTable');
+        const rows = table.getElementsByTagName('tr');
+        
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const text = row.textContent.toLowerCase();
+            
+            if (text.includes(searchValue)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    });
+    
+    function viewCustomer(customerId) {
+        fetch(`/admin/api/customer/${customerId}`)
+            .then(response => response.json())
+            .then(data => {
+                const content = `
+                    <div style="margin-top: 1rem;">
+                        <p><strong>Customer ID:</strong> ${data.CustomerID}</p>
+                        <p><strong>Username:</strong> ${data.Username}</p>
+                        <p><strong>Name:</strong> ${data.Name}</p>
+                        <p><strong>Email:</strong> ${data.Email}</p>
+                        <p><strong>Phone:</strong> ${data.Phone || 'N/A'}</p>
+                        <p><strong>Address:</strong> ${data.Address || 'N/A'}</p>
+                        <p><strong>Total Orders:</strong> ${data.TotalOrders}</p>
+                        <p><strong>Total Spent:</strong> ৳${parseFloat(data.TotalSpent).toFixed(2)}</p>
+                    </div>
+                `;
+                document.getElementById('modalTitle').textContent = `Customer: ${data.Name}`;
+                document.getElementById('modalContent').innerHTML = content;
+                document.getElementById('customerModal').style.display = 'block';
+            })
+            .catch(error => {
+                alert('Error loading customer details');
+                console.error(error);
+            });
+    }
+    
+    function closeModal() {
+        document.getElementById('customerModal').style.display = 'none';
+    }
+    
+    // Close modal on outside click
+    document.getElementById('customerModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+</script>
+{% endblock %}

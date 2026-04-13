@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Fashion Mart{% endblock %}
+
+{% block content %}
+<div class="form-container" style="max-width: 600px;">
+    <h1 style="text-align: center; margin-bottom: 2rem;">Create Account</h1>
+    
+    <form method="POST" action="{{ url_for('register') }}">
+        <div class="form-group">
+            <label for="username">Username *</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password *</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="name">Full Name *</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="number">Phone Number</label>
+            <input type="tel" id="number" name="number">
+        </div>
+        
+        <h3 style="margin: 1.5rem 0 1rem;">Address Details (Optional)</h3>
+        
+        <div class="form-group">
+            <label for="road">Road</label>
+            <input type="text" id="road" name="road">
+        </div>
+        
+        <div class="form-group">
+            <label for="area">Area</label>
+            <input type="text" id="area" name="area">
+        </div>
+        
+        <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city">
+        </div>
+        
+        <div class="form-group">
+            <label for="district">District</label>
+            <input type="text" id="district" name="district">
+        </div>
+        
+        <button type="submit" class="btn" style="width: 100%;">Register</button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 1.5rem;">
+        Already have an account? 
+        <a href="{{ url_for('login') }}" style="color: #e91e63; font-weight: bold;">Login here</a>
+    </p>
+</div>
+{% endblock %}
