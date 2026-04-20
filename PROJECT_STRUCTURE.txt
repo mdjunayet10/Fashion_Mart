@@ -1,0 +1,93 @@
+# Fashion Mart - Clean Project Structure
+# Ready for Presentation (November 10, 2025)
+
+## 📁 Project Files
+
+### Core Application
+- app.py                    # Main Flask application (1330 lines)
+- requirements.txt          # Python dependencies
+- setup_db.py              # Database setup utility
+- README.md                # Complete project documentation
+
+### Database
+- database/schema.sql      # Complete database schema with 50 products
+- database/db_config.py    # Database configuration
+
+### Templates (21 HTML files)
+Customer Interface:
+- base.html, index.html, login.html, register.html
+- products.html, product_detail.html
+- cart.html, checkout.html
+- orders.html, order_detail.html, order_confirmation.html
+
+Admin Interface:
+- admin_base.html, admin_login.html, admin_dashboard.html
+- admin_orders.html, admin_customers.html, admin_products.html, admin_delivery.html
+
+Delivery Interface:
+- delivery_base.html, delivery_login.html, delivery_dashboard.html
+
+### Static Files
+- static/css/style.css     # Main stylesheet
+- static/js/main.js        # JavaScript utilities
+
+## ✨ Features Implemented
+
+1. Product Catalog (50 products)
+   - Sarees, Punjabi, Dresses, Accessories, Footwear
+   - Search and category filtering
+   - Product details with reviews
+
+2. Order Management
+   - Shopping cart with real-time updates
+   - Checkout with multiple payment methods
+   - Order tracking and history
+   - Fixed ৳100 delivery charge
+
+3. Payment System
+   - Cash on Delivery (with payment tracking)
+   - Online Payment (auto-complete)
+   - Bank Transfer (auto-complete)
+
+4. Delivery Dashboard
+   - Assign orders to delivery personnel
+   - Mark orders as delivered
+   - Confirm cash received (COD only)
+
+5. Admin Dashboard
+   - View all orders and customers
+   - Sales statistics
+   - System management
+
+## 🚀 Quick Start
+
+1. Activate virtual environment:
+   source venv/bin/activate
+
+2. Install dependencies:
+   pip install -r requirements.txt
+
+3. Setup database:
+   mysql -u root -p < database/schema.sql
+
+4. Run application:
+   python app.py
+
+5. Access at: http://localhost:5000
+
+## 👤 Test Accounts
+
+Customer:
+- Username: john_doe / Password: password123
+- Username: jane_smith / Password: password123
+
+Delivery:
+- Username: delivery1 / Password: delivery123
+
+Admin:
+- Username: admin / Password: admin123
+
+## ✅ Ready for Presentation!
+
+All files cleaned, organized, and committed to GitHub.
+Repository: https://github.com/Tahmidrk/Fashion_Mart

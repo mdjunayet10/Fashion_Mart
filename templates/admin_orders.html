@@ -1,0 +1,196 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin - Order Management{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="margin-bottom: 2rem;">📊 Order Management (Admin)</h1>
+    
+    <div class="card" style="padding: 1.5rem; margin-bottom: 2rem; background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: white;">
+        <h3 style="margin: 0 0 0.5rem 0;">Quick Stats</h3>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+            <div>
+                <div style="font-size: 2rem; font-weight: bold;">{{ orders|length }}</div>
+                <div style="opacity: 0.9;">Total Orders</div>
+            </div>
+            <div>
+                <div style="font-size: 2rem; font-weight: bold;">
+                    {{ orders|selectattr('OrderStatus', 'equalto', 'Pending')|list|length }}
+                </div>
+                <div style="opacity: 0.9;">Pending</div>
+            </div>
+            <div>
+                <div style="font-size: 2rem; font-weight: bold;">
+                    {{ orders|selectattr('DeliveryManID', 'none')|list|length }}
+                </div>
+                <div style="opacity: 0.9;">Unassigned</div>
+            </div>
+            <div>
+                <div style="font-size: 2rem; font-weight: bold;">
+                    {{ orders|selectattr('OrderStatus', 'equalto', 'Delivered')|list|length }}
+                </div>
+                <div style="opacity: 0.9;">Delivered</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card" style="padding: 1.5rem;">
+        <h2 style="margin: 0 0 1.5rem 0;">All Orders</h2>
+        
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #f5f5f5; border-bottom: 2px solid #ddd;">
+                    <th style="padding: 1rem; text-align: left;">Order ID</th>
+                    <th style="padding: 1rem; text-align: left;">Customer</th>
+                    <th style="padding: 1rem; text-align: left;">Date</th>
+                    <th style="padding: 1rem; text-align: right;">Amount</th>
+                    <th style="padding: 1rem; text-align: center;">Payment</th>
+                    <th style="padding: 1rem; text-align: center;">Status</th>
+                    <th style="padding: 1rem; text-align: left;">Delivery Man</th>
+                    <th style="padding: 1rem; text-align: center;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 1rem;"><strong>#{{ order.OrderID }}</strong></td>
+                    <td style="padding: 1rem;">
+                        {{ order.CustomerName }}<br>
+                        <small style="color: #666;">{{ order.Number }}</small>
+                    </td>
+                    <td style="padding: 1rem;">
+                        <small>{{ order.OrderDate.strftime('%b %d, %Y') }}</small>
+                    </td>
+                    <td style="padding: 1rem; text-align: right;">
+                        <strong>৳{{ "%.2f"|format(order.TotalAmount) }}</strong>
+                    </td>
+                    <td style="padding: 1rem; text-align: center;">
+                        <div style="font-size: 0.85rem;">{{ order.PaymentMethod }}</div>
+                        <span style="display: inline-block; margin-top: 0.25rem; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;
+                              background: {% if order.PaymentStatus == 'Paid' %}#d4edda; color: #155724{% else %}#f8d7da; color: #721c24{% endif %};">
+                            {{ order.PaymentStatus }}
+                        </span>
+                    </td>
+                    <td style="padding: 1rem; text-align: center;">
+                        <span style="display: inline-block; padding: 0.35rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;
+                              background: {% if order.OrderStatus == 'Delivered' %}#d4edda; color: #155724{% elif order.OrderStatus == 'Pending' %}#fff3cd; color: #856404{% else %}#d1ecf1; color: #0c5460{% endif %};">
+                            {{ order.OrderStatus }}
+                        </span>
+                    </td>
+                    <td style="padding: 1rem;">
+                        {% if order.DeliveryManName %}
+                            <div style="color: #28a745; font-weight: 500;">✓ {{ order.DeliveryManName }}</div>
+                        {% else %}
+                            <span style="color: #999;">Not assigned</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 1rem; text-align: center;">
+                        {% if not order.DeliveryManID %}
+                        <button onclick="showAssignModal({{ order.OrderID }}, '{{ order.CustomerName }}')" 
+                                class="btn btn-small" 
+                                style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                            Assign
+                        </button>
+                        {% else %}
+                        <button onclick="showAssignModal({{ order.OrderID }}, '{{ order.CustomerName }}')" 
+                                class="btn btn-small btn-secondary" 
+                                style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                            Reassign
+                        </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Assign Delivery Man Modal -->
+<div id="assignModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+     background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 500px; width: 90%;">
+        <h2 style="margin: 0 0 1rem 0;">Assign Delivery Man</h2>
+        <p style="margin: 0 0 1.5rem 0; color: #666;">Order #<span id="modalOrderId"></span> - <span id="modalCustomerName"></span></p>
+        
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Select Delivery Man:</label>
+            <select id="deliveryManSelect" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem;">
+                <option value="">-- Choose Delivery Man --</option>
+                {% for dm in delivery_men %}
+                <option value="{{ dm.DeliveryManID }}">
+                    {{ dm.Name }} - {{ dm.VehicleType }} ({{ dm.Phone }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div style="display: flex; gap: 1rem;">
+            <button onclick="assignDelivery()" class="btn" style="flex: 1;">
+                Assign
+            </button>
+            <button onclick="closeModal()" class="btn btn-secondary" style="flex: 1;">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentOrderId = null;
+
+function showAssignModal(orderId, customerName) {
+    currentOrderId = orderId;
+    document.getElementById('modalOrderId').textContent = orderId;
+    document.getElementById('modalCustomerName').textContent = customerName;
+    document.getElementById('assignModal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('assignModal').style.display = 'none';
+    currentOrderId = null;
+    document.getElementById('deliveryManSelect').value = '';
+}
+
+function assignDelivery() {
+    const deliveryManId = document.getElementById('deliveryManSelect').value;
+    
+    if (!deliveryManId) {
+        alert('Please select a delivery man');
+        return;
+    }
+    
+    fetch('/admin/api/assign-delivery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            order_id: currentOrderId,
+            delivery_man_id: deliveryManId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Order assigned successfully!');
+            closeModal();
+            location.reload();
+        } else {
+            alert('Error: ' + (data.error || 'Failed to assign'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred');
+    });
+}
+
+// Close modal when clicking outside
+document.getElementById('assignModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+</script>
+{% endblock %}

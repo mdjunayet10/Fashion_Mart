@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Fashion Mart{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="container">
+        <h1>Welcome to Fashion Mart</h1>
+        <p>Your One-Stop Destination for Trendy Fashion & Elegant Clothing</p>
+        <a href="{{ url_for('products') }}" class="btn">Shop Now</a>
+    </div>
+</div>
+
+<div class="container">
+    <section style="margin: 3rem 0;">
+        <h2 style="text-align: center; margin-bottom: 2rem;">Why Choose Fashion Mart?</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+            <div class="card" style="padding: 2rem; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">👗</div>
+                <h3>Wide Collection</h3>
+                <p>Explore a vast range of traditional and modern fashion items</p>
+            </div>
+            <div class="card" style="padding: 2rem; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
+                <h3>Quality Products</h3>
+                <p>Premium quality fabrics with exquisite embroidery work</p>
+            </div>
+            <div class="card" style="padding: 2rem; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🚚</div>
+                <h3>Fast Delivery</h3>
+                <p>Quick and reliable delivery to your doorstep</p>
+            </div>
+            <div class="card" style="padding: 2rem; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🎁</div>
+                <h3>Reward Points</h3>
+                <p>Earn reward points on every purchase</p>
+            </div>
+        </div>
+    </section>
+
+    <section style="margin: 3rem 0; text-align: center;">
+        <h2 style="margin-bottom: 2rem;">Featured Categories</h2>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{{ url_for('products', category='Saree') }}" class="btn btn-outline">Saree</a>
+            <a href="{{ url_for('products', category='Men') }}" class="btn btn-outline">Men's Wear</a>
+            <a href="{{ url_for('products', category='Women') }}" class="btn btn-outline">Women's Wear</a>
+            <a href="{{ url_for('products') }}" class="btn btn-secondary">View All</a>
+        </div>
+    </section>
+
+    {% if not session.get('customer_id') %}
+    <section style="background: linear-gradient(135deg, #e91e63, #9c27b0); padding: 3rem; border-radius: 8px; color: white; text-align: center; margin: 3rem 0;">
+        <h2 style="margin-bottom: 1rem;">Join Fashion Mart Today!</h2>
+        <p style="margin-bottom: 2rem; font-size: 1.1rem;">Register now to start shopping and earn reward points</p>
+        <a href="{{ url_for('register') }}" class="btn" style="background: white; color: #e91e63;">Create Account</a>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}

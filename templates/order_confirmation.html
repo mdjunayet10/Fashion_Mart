@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}Order Confirmation - Fashion Mart{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px;">
+    <!-- Success Animation -->
+    <div style="text-align: center; padding: 2rem 0;">
+        <div style="width: 100px; height: 100px; margin: 0 auto 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: successPulse 0.6s ease-out;">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        <h1 style="color: #333; margin-bottom: 0.5rem;">Order Placed Successfully!</h1>
+        <p style="color: #666; font-size: 1.1rem;">Thank you for your purchase</p>
+    </div>
+
+    <!-- Order Receipt Card -->
+    <div class="card" style="padding: 2.5rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+        <!-- Header -->
+        <div style="text-align: center; padding-bottom: 1.5rem; border-bottom: 2px dashed #e0e0e0; margin-bottom: 1.5rem;">
+            <h2 style="color: #e91e63; margin-bottom: 0.5rem;">Fashion Mart</h2>
+            <p style="color: #666; font-size: 0.9rem;">Order Receipt</p>
+        </div>
+
+        <!-- Order Info -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #667eea11 0%, #764ba222 100%); border-radius: 8px;">
+            <div>
+                <div style="color: #666; font-size: 0.85rem; margin-bottom: 0.25rem;">Order Number</div>
+                <div style="font-weight: bold; font-size: 1.2rem; color: #333;">#{{ order.OrderID }}</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="color: #666; font-size: 0.85rem; margin-bottom: 0.25rem;">Order Date</div>
+                <div style="font-weight: bold; color: #333;">{{ order.OrderDate.strftime('%b %d, %Y') }}</div>
+                <div style="color: #999; font-size: 0.85rem;">{{ order.OrderDate.strftime('%I:%M %p') }}</div>
+            </div>
+        </div>
+
+        <!-- Customer Info -->
+        <div style="margin-bottom: 2rem; padding: 1rem; background: #f9f9f9; border-radius: 8px;">
+            <h3 style="margin-bottom: 1rem; color: #333; font-size: 1.1rem;">Customer Information</h3>
+            <div style="display: grid; gap: 0.5rem;">
+                <div><strong>Name:</strong> {{ customer.FirstName }} {{ customer.LastName }}</div>
+                <div><strong>Email:</strong> {{ customer.Email }}</div>
+                <div><strong>Phone:</strong> {{ customer.Phone }}</div>
+                <div><strong>Address:</strong> {{ customer.Address }}</div>
+            </div>
+        </div>
+
+        <!-- Order Items -->
+        <div style="margin-bottom: 2rem;">
+            <h3 style="margin-bottom: 1rem; color: #333; font-size: 1.1rem;">Order Items</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f5f5f5; border-bottom: 2px solid #e0e0e0;">
+                        <th style="padding: 0.75rem; text-align: left; font-weight: 600;">Item</th>
+                        <th style="padding: 0.75rem; text-align: center; font-weight: 600;">Qty</th>
+                        <th style="padding: 0.75rem; text-align: right; font-weight: 600;">Price</th>
+                        <th style="padding: 0.75rem; text-align: right; font-weight: 600;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.order_items %}
+                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                        <td style="padding: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <img src="{{ item.ImageURL }}" alt="{{ item.ProductName }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                <strong>{{ item.ProductName }}</strong>
+                            </div>
+                        </td>
+                        <td style="padding: 1rem; text-align: center;">{{ item.Quantity }}</td>
+                        <td style="padding: 1rem; text-align: right;">৳{{ "{:,.2f}".format(item.Price) }}</td>
+                        <td style="padding: 1rem; text-align: right; font-weight: bold;">৳{{ "{:,.2f}".format(item.Quantity * item.Price) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Order Summary -->
+        <div style="border-top: 2px solid #e0e0e0; padding-top: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                <span style="color: #666;">Subtotal:</span>
+                <span style="font-weight: 600;">৳{{ "{:,.2f}".format(order.TotalAmount - 100) }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                <span style="color: #666;">Delivery Charge:</span>
+                <span style="font-weight: 600;">৳100.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                <span style="color: #666;">Tax:</span>
+                <span style="font-weight: 600;">৳0.00</span>
+            </div>
+            <div style="border-top: 2px solid #e91e63; padding-top: 1rem; margin-top: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 1.3rem; font-weight: bold; color: #333;">Total Amount:</span>
+                    <span style="font-size: 1.8rem; font-weight: bold; color: #e91e63;">৳{{ "{:,.2f}".format(order.TotalAmount) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Badges -->
+        <div style="margin-top: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #4caf5011 0%, #8bc34a22 100%); border-radius: 8px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center;">
+                <div>
+                    <div style="color: #666; font-size: 0.85rem; margin-bottom: 0.5rem;">Order Status</div>
+                    <span class="badge badge-success" style="font-size: 1rem; padding: 0.5rem 1rem;">{{ order.OrderStatus }}</span>
+                </div>
+                <div>
+                    <div style="color: #666; font-size: 0.85rem; margin-bottom: 0.5rem;">Delivery Status</div>
+                    <span class="badge badge-info" style="font-size: 1rem; padding: 0.5rem 1rem;">{{ order.DeliveryStatus }}</span>
+                </div>
+            </div>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e0e0e0;">
+                <div style="display: grid; grid-template-columns: {% if order.PaymentMethod == 'Cash on Delivery' %}1fr 1fr{% else %}1fr{% endif %}; gap: 1rem; text-align: center;">
+                    <div>
+                        <div style="color: #666; font-size: 0.85rem; margin-bottom: 0.5rem;">Payment Method</div>
+                        <span style="font-weight: 600;">{{ order.PaymentMethod }}</span>
+                    </div>
+                    {% if order.PaymentMethod == 'Cash on Delivery' %}
+                    <div>
+                        <div style="color: #666; font-size: 0.85rem; margin-bottom: 0.5rem;">Payment Status</div>
+                        <span class="badge badge-{{ 'success' if order.PaymentStatus == 'Paid' else 'warning' }}" 
+                              style="font-size: 1rem; padding: 0.5rem 1rem;">
+                            {{ order.PaymentStatus }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Important Notes -->
+        <div style="margin-top: 2rem; padding: 1.5rem; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
+            <h4 style="margin-bottom: 0.75rem; color: #856404;">📦 What's Next?</h4>
+            <ul style="margin: 0; padding-left: 1.25rem; color: #856404; line-height: 1.8;">
+                <li>We'll send you an email confirmation shortly</li>
+                <li>Your order will be processed within 1-2 business days</li>
+                <li>Expected delivery: 3-5 business days</li>
+                {% if order.PaymentMethod == 'Cash on Delivery' %}
+                <li><strong>Payment:</strong> Please keep {{ "{:,.2f}".format(order.TotalAmount) }} BDT ready for cash on delivery</li>
+                {% endif %}
+                <li>You can track your order status anytime from "My Orders"</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 3rem;">
+        <a href="{{ url_for('index') }}" class="btn" style="padding: 1rem 2rem; font-size: 1.1rem;">
+            🏠 Return to Home
+        </a>
+        <a href="{{ url_for('my_orders') }}" class="btn btn-secondary" style="padding: 1rem 2rem; font-size: 1.1rem;">
+            📋 View All Orders
+        </a>
+        <a href="{{ url_for('products') }}" class="btn btn-secondary" style="padding: 1rem 2rem; font-size: 1.1rem;">
+            🛍️ Continue Shopping
+        </a>
+    </div>
+
+    <!-- Print Button -->
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <button onclick="window.print()" class="btn btn-secondary" style="padding: 0.75rem 1.5rem;">
+            🖨️ Print Receipt
+        </button>
+    </div>
+</div>
+
+<style>
+@keyframes successPulse {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@media print {
+    nav, button, .btn-secondary {
+        display: none !important;
+    }
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+}
+</style>
+{% endblock %}

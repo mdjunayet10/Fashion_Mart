@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}My Orders - Fashion Mart{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="margin-bottom: 2rem;">My Orders</h1>
+    
+    {% if orders %}
+        <div style="display: grid; gap: 1.5rem;">
+            {% for order in orders %}
+                <div class="card" style="padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 2px solid #f0f0f0;">
+                        <div>
+                            <h3 style="margin-bottom: 0.5rem;">Order #{{ order.OrderID }}</h3>
+                            <div style="color: #666; font-size: 0.9rem;">
+                                Placed on {{ order.OrderDate.strftime('%B %d, %Y at %I:%M %p') }}
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #e91e63; margin-bottom: 0.5rem;">
+                                ৳{{ "{:,.2f}".format(order.TotalAmount) }}
+                            </div>
+                            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                <span class="badge badge-{{ 'success' if order.OrderStatus == 'Delivered' else 'warning' }}" 
+                                      style="padding: 0.35rem 0.75rem; border-radius: 12px; font-size: 0.85rem;">
+                                    Order: {{ order.OrderStatus }}
+                                </span>
+                                <span class="badge badge-{{ 'success' if order.DeliveryStatus == 'Delivered' else 'info' }}" 
+                                      style="padding: 0.35rem 0.75rem; border-radius: 12px; font-size: 0.85rem;">
+                                    Delivery: {{ order.DeliveryStatus }}
+                                </span>
+                            </div>
+                            <div style="margin-top: 0.5rem;">
+                                <span style="font-size: 0.85rem; color: #666;">Payment: {{ order.PaymentMethod }}</span>
+                                {% if order.PaymentMethod == 'Cash on Delivery' %}
+                                <span class="badge badge-{{ 'success' if order.PaymentStatus == 'Paid' else 'warning' }}" 
+                                      style="margin-left: 0.5rem; padding: 0.35rem 0.75rem; border-radius: 12px; font-size: 0.85rem;">
+                                    {{ order.PaymentStatus }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <h4 style="margin-bottom: 0.75rem; color: #666;">Order Items:</h4>
+                        <div style="display: grid; gap: 0.75rem;">
+                            {% for item in order.order_items %}
+                                <div style="display: flex; gap: 1rem; align-items: center; padding: 0.75rem; background: #f9f9f9; border-radius: 4px;">
+                                    <img src="{{ item.ImageURL }}" alt="{{ item.ProductName }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
+                                    <div style="flex: 1;">
+                                        <strong>{{ item.ProductName }}</strong>
+                                        <div style="color: #666; font-size: 0.9rem; margin-top: 0.25rem;">
+                                            Quantity: {{ item.Quantity }} × ৳{{ "{:,.2f}".format(item.Price) }}
+                                        </div>
+                                    </div>
+                                    <div style="font-weight: bold; color: #e91e63;">
+                                        ৳{{ "{:,.2f}".format(item.Quantity * item.Price) }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: right;">
+                        <a href="{{ url_for('order_detail', order_id=order.OrderID) }}" class="btn btn-secondary">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 3rem; background: white; border-radius: 8px;">
+            <h2>No orders yet</h2>
+            <p style="color: #666; margin: 1rem 0;">Start shopping to place your first order!</p>
+            <a href="{{ url_for('products') }}" class="btn">Browse Products</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
