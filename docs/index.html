@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fashion Mart</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff7f2;
+      color: #2b1b16;
+    }
+
+    header {
+      background: linear-gradient(135deg, #7c2d12, #ea580c);
+      color: white;
+      padding: 70px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 48px;
+      margin: 0 0 12px;
+    }
+
+    header p {
+      font-size: 20px;
+      max-width: 720px;
+      margin: 0 auto 28px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: white;
+      color: #9a3412;
+      padding: 14px 22px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: auto;
+      padding: 50px 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: #9a3412;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      background: #2b1b16;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Fashion Mart</h1>
+    <p>A full-stack fashion retail web application with product browsing, cart, checkout, order tracking, delivery management, and admin dashboard.</p>
+    <a class="btn" href="https://github.com/mdjunayet10/Fashion_Mart">View Source Code</a>
+  </header>
+
+  <main>
+    <h2>Project Features</h2>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Product Catalog</h3>
+        <p>Browse fashion products with categories, search, price, stock, and ratings.</p>
+      </div>
+
+      <div class="card">
+        <h3>Shopping Cart</h3>
+        <p>Add products to cart, update quantity, calculate totals, and checkout.</p>
+      </div>
+
+      <div class="card">
+        <h3>Order Tracking</h3>
+        <p>Customers can view order history, order status, delivery status, and payment status.</p>
+      </div>
+
+      <div class="card">
+        <h3>Admin Dashboard</h3>
+        <p>Admin and delivery management features for a retail workflow.</p>
+      </div>
+    </div>
+
+    <p style="margin-top: 40px;">
+      Note: This GitHub Pages version is only a static project showcase. The full app requires Flask hosting and a MySQL database.
+    </p>
+  </main>
+
+  <footer>
+    Fashion Mart Management System
+  </footer>
+</body>
+</html>
