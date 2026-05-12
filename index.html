@@ -1,158 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Home - Fashion Mart</title>
-  <link rel="stylesheet" href="static/css/style.css" />
-  <style>
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .feature-card {
-      background: white;
-      padding: 2rem;
-      border-radius: var(--border-radius);
-      box-shadow: var(--box-shadow);
-      text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    }
-
-    .feature-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    .categories {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-top: 1.5rem;
-    }
-
-    .category-card {
-      flex: 1;
-      min-width: 200px;
-      background: white;
-      color: var(--primary-color);
-      padding: 2rem;
-      text-align: center;
-      text-decoration: none;
-      border-radius: var(--border-radius);
-      box-shadow: var(--box-shadow);
-      font-weight: 700;
-      font-size: 1.2rem;
-      transition: all 0.3s;
-    }
-
-    .category-card:hover {
-      background: var(--primary-color);
-      color: white;
-      transform: translateY(-5px);
-    }
-
-    .notice {
-      background: #fff3cd;
-      color: #856404;
-      padding: 1rem;
-      border-radius: var(--border-radius);
-      margin-top: 2rem;
-      border: 1px solid #ffeeba;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Fashion Mart</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    
 </head>
 <body>
-  <nav>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">🛍️ Fashion Mart</a>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+                
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        
+<div class="hero">
     <div class="container">
-      <a href="index.html" class="logo">🛍️ Fashion Mart</a>
-
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="#products">Products</a></li>
-        <li><a href="#login">Login</a></li>
-        <li><a href="#register">Register</a></li>
-      </ul>
+        <h1>Welcome to Fashion Mart</h1>
+        <p>Your One-Stop Destination for Trendy Fashion & Elegant Clothing</p>
+        <a href="products.html" class="btn">Shop Now</a>
     </div>
-  </nav>
+</div>
 
-  <section class="hero">
-    <div class="container">
-      <h1>Welcome to Fashion Mart</h1>
-      <p>Your One-Stop Destination for Trendy Fashion & Elegant Clothing</p>
-      <a href="#products" class="btn">Shop Now</a>
-    </div>
-  </section>
-
-  <main class="container">
-    <section>
-      <h2>Why Choose Fashion Mart?</h2>
-
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">👗</div>
-          <h3>Wide Collection</h3>
-          <p>Explore a vast range of traditional and modern fashion items.</p>
+<div class="container">
+    <section style="margin: 3rem 0;">
+        <h2 style="text-align: center; margin-bottom: 2rem;">Why Choose Fashion Mart?</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+            <div class="card" style="padding: 2rem; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">👗</div>
+                <h3>Wide Collection</h3>
+                <p>Explore a vast range of traditional and modern fashion items</p>
+            </div>
+            <div class="card" style="padding: 2rem; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
+                <h3>Quality Products</h3>
+                <p>Premium quality fabrics with exquisite embroidery work</p>
+            </div>
+            <div class="card" style="padding: 2rem; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🚚</div>
+                <h3>Fast Delivery</h3>
+                <p>Quick and reliable delivery to your doorstep</p>
+            </div>
+            <div class="card" style="padding: 2rem; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🎁</div>
+                <h3>Reward Points</h3>
+                <p>Earn reward points on every purchase</p>
+            </div>
         </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">✨</div>
-          <h3>Quality Products</h3>
-          <p>Premium quality fabrics with exquisite embroidery work.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🚚</div>
-          <h3>Fast Delivery</h3>
-          <p>Quick and reliable delivery to your doorstep.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🎁</div>
-          <h3>Reward Points</h3>
-          <p>Earn reward points on every purchase.</p>
-        </div>
-      </div>
     </section>
 
-    <section id="products" style="margin-top: 4rem;">
-      <h2>Featured Categories</h2>
-
-      <div class="categories">
-        <a href="#products" class="category-card">Saree</a>
-        <a href="#products" class="category-card">Men's Wear</a>
-        <a href="#products" class="category-card">Women's Wear</a>
-        <a href="#products" class="category-card">View All</a>
-      </div>
-
-      <div class="notice">
-        This GitHub Pages page is a static preview of your Fashion Mart homepage.
-        The real Products, Login, Cart, Checkout, Admin, and Delivery features need Flask hosting.
-      </div>
+    <section style="margin: 3rem 0; text-align: center;">
+        <h2 style="margin-bottom: 2rem;">Featured Categories</h2>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="products.html" class="btn btn-outline">Saree</a>
+            <a href="products.html" class="btn btn-outline">Men's Wear</a>
+            <a href="products.html" class="btn btn-outline">Women's Wear</a>
+            <a href="products.html" class="btn btn-secondary">View All</a>
+        </div>
     </section>
 
-    <section id="register" style="margin-top: 4rem; text-align: center;">
-      <h2>Join Fashion Mart Today!</h2>
-      <p>Register now to start shopping and earn reward points.</p>
-      <a href="#register" class="btn btn-secondary">Create Account</a>
+    
+    <section style="background: linear-gradient(135deg, #e91e63, #9c27b0); padding: 3rem; border-radius: 8px; color: white; text-align: center; margin: 3rem 0;">
+        <h2 style="margin-bottom: 1rem;">Join Fashion Mart Today!</h2>
+        <p style="margin-bottom: 2rem; font-size: 1.1rem;">Register now to start shopping and earn reward points</p>
+        <a href="register.html" class="btn" style="background: white; color: #e91e63;">Create Account</a>
     </section>
-  </main>
+    
+</div>
 
-  <footer>
-    <div class="container">
-      <p>&copy; 2025 Fashion Mart Management System. All rights reserved.</p>
-      <p>Digitalize Your Fashion Retail Experience</p>
-    </div>
-  </footer>
+    </main>
 
-  <script src="static/js/main.js"></script>
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Fashion Mart Management System. All rights reserved.</p>
+            <p>Digitalize Your Fashion Retail Experience</p>
+        </div>
+    </footer>
+
+    <script src="static/js/main.js"></script>
+    
 </body>
 </html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Fashion Mart</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">🛍️ Fashion Mart</a>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+                
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        
+<div class="form-container">
+    <h1 style="text-align: center; margin-bottom: 2rem;">Login</h1>
+    
+    
+    
+    <form method="POST" action="login.html">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" 
+                   autocomplete="off" 
+                   placeholder="Enter your username" 
+                   required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" 
+                   autocomplete="new-password" 
+                   placeholder="Enter your password" 
+                   required>
+        </div>
+        
+        <button type="submit" class="btn" style="width: 100%;">Login</button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 1.5rem;">
+        Don't have an account? 
+        <a href="register.html" style="color: #e91e63; font-weight: bold;">Register here</a>
+    </p>
+</div>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Fashion Mart Management System. All rights reserved.</p>
+            <p>Digitalize Your Fashion Retail Experience</p>
+        </div>
+    </footer>
+
+    <script src="static/js/main.js"></script>
+    
+</body>
+</html>

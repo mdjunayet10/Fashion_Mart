@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegant Embroidered Saree - Fashion Mart</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">🛍️ Fashion Mart</a>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+                
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        
+<div class="container">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
+        <!-- Product Image -->
+        <div>
+            <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&amp;fit=crop&amp;w=900&amp;q=80" alt="Elegant Embroidered Saree" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+        </div>
+
+        <!-- Product Details -->
+        <div>
+            <div class="product-category" style="font-size: 1rem; margin-bottom: 0.5rem;">Saree</div>
+            <h1 style="margin-bottom: 1rem;">Elegant Embroidered Saree</h1>
+            
+            <div class="product-rating" style="font-size: 1.2rem; margin-bottom: 1rem;">
+                ⭐ 4.8 / 5.0
+                <span style="color: #666; font-size: 0.9rem;">(0 reviews)</span>
+            </div>
+
+            <div class="product-price" style="font-size: 2.5rem; margin-bottom: 1rem;">
+                ৳2,450.00
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                
+                    <span class="badge badge-success">In Stock</span>
+                    <span style="color: #666; margin-left: 0.5rem;">12 items available</span>
+                
+            </div>
+
+            
+                <div style="margin-bottom: 1rem; padding: 1rem; background: #f5f5f5; border-radius: 8px;">
+                    <strong>Embroidery:</strong> Hand Embroidery
+                </div>
+            
+
+            
+                <div style="margin-bottom: 1.5rem;">
+                    <h3 style="margin-bottom: 0.5rem;">Description</h3>
+                    <p style="color: #666;">Premium saree with elegant embroidery and soft comfortable fabric.</p>
+                </div>
+            
+
+            <div style="margin-bottom: 1rem;">
+                <label for="quantity" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Quantity:</label>
+                <input type="number" id="quantity" value="1" min="1" max="12" 
+                       style="padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; width: 100px; font-size: 1rem;">
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn" onclick="addToCart(1)" 
+                        
+                        style="flex: 1;">
+                    Add to Cart
+                </button>
+                <a href="products.html" class="btn btn-secondary">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div style="margin-top: 3rem;">
+        <h2 style="margin-bottom: 1.5rem;">Customer Reviews</h2>
+        
+        <!-- Review Summary -->
+        <div class="card" style="padding: 1.5rem; margin-bottom: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <div style="display: flex; align-items: center; gap: 2rem;">
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; font-weight: bold;" id="avgRating">4.8</div>
+                    <div style="font-size: 1.5rem;">⭐⭐⭐⭐⭐</div>
+                    <div style="opacity: 0.9;" id="reviewCount">0 reviews</div>
+                </div>
+                <div style="flex: 1;">
+                    <p style="margin: 0; opacity: 0.9;">Based on customer feedback</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Review Form (Only for logged in users) -->
+        
+        <div class="card" style="padding: 2rem; margin-bottom: 2rem; text-align: center; background: #f8f9fa;">
+            <p style="margin: 0; color: #666;">
+                <a href="login.html" style="color: #667eea; font-weight: bold;">Login</a> to write a review
+            </p>
+        </div>
+        
+
+        <!-- Reviews List -->
+        <div id="reviewsList">
+            
+                <div class="card" id="noReviews" style="padding: 2rem; text-align: center; color: #666;">
+                    <p style="margin: 0;">No reviews yet. Be the first to review this product!</p>
+                </div>
+            
+        </div>
+    </div>
+</div>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Fashion Mart Management System. All rights reserved.</p>
+            <p>Digitalize Your Fashion Retail Experience</p>
+        </div>
+    </footer>
+
+    <script src="static/js/main.js"></script>
+    
+<script>
+let selectedRating = 0;
+
+function addToCart(productId) {
+    
+        alert('Please login to add items to cart');
+        window.location.href = 'login.html';
+        return;
+    
+    
+    const quantity = parseInt(document.getElementById('quantity').value);
+    
+    if (quantity < 1) {
+        alert('Please enter a valid quantity');
+        return;
+    }
+    
+    fetch('#cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            product_id: productId,
+            quantity: quantity
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Product added to cart!');
+            updateCartCount();
+        } else {
+            alert(data.error || 'Failed to add to cart');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred');
+    });
+}
+
+// Star Rating Functions
+function setRating(rating) {
+    selectedRating = rating;
+    document.getElementById('rating').value = rating;
+    
+    const stars = document.querySelectorAll('.star');
+    stars.forEach((star, index) => {
+        if (index < rating) {
+            star.textContent = '★';
+            star.style.color = '#ffc107';
+        } else {
+            star.textContent = '☆';
+            star.style.color = '#ddd';
+        }
+    });
+}
+
+// Hover effect for stars
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+        star.addEventListener('mouseenter', function() {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            stars.forEach((s, index) => {
+                if (index < rating) {
+                    s.textContent = '★';
+                    s.style.color = '#ffc107';
+                } else {
+                    s.textContent = '☆';
+                    s.style.color = '#ddd';
+                }
+            });
+        });
+    });
+    
+    const starRating = document.querySelector('.star-rating');
+    if (starRating) {
+        starRating.addEventListener('mouseleave', function() {
+            setRating(selectedRating);
+        });
+    }
+    
+    // Load reviews on page load
+    loadReviews();
+});
+
+// Submit Review
+function submitReview(event) {
+    event.preventDefault();
+    
+    const rating = document.getElementById('rating').value;
+    const comment = document.getElementById('comment').value.trim();
+    
+    if (!rating) {
+        alert('Please select a rating');
+        return;
+    }
+    
+    const productId = 1;
+    
+    fetch('#review/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            product_id: productId,
+            rating: rating,
+            comment: comment
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Review submitted successfully!');
+            // Reset form
+            document.getElementById('reviewForm').reset();
+            selectedRating = 0;
+            setRating(0);
+            // Reload reviews
+            loadReviews();
+        } else {
+            alert(data.error || 'Failed to submit review');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while submitting your review');
+    });
+}
+
+// Load Reviews
+function loadReviews() {
+    const productId = 1;
+    
+    fetch(`/api/reviews/${productId}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update average rating
+            document.getElementById('avgRating').textContent = data.avg_rating.toFixed(1);
+            document.getElementById('reviewCount').textContent = `${data.review_count} ${data.review_count === 1 ? 'review' : 'reviews'}`;
+            
+            // Update reviews list
+            const reviewsList = document.getElementById('reviewsList');
+            const noReviews = document.getElementById('noReviews');
+            
+            if (data.reviews.length > 0) {
+                if (noReviews) {
+                    noReviews.remove();
+                }
+                
+                reviewsList.innerHTML = '';
+                data.reviews.forEach(review => {
+                    const stars = '⭐'.repeat(review.rating);
+                    const reviewCard = `
+                        <div class="card review-card" style="padding: 1.5rem; margin-bottom: 1rem; animation: fadeIn 0.5s;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <strong>${review.customer_name}</strong>
+                                <span class="product-rating" style="color: #ffc107;">${stars}</span>
+                            </div>
+                            <div style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                ${review.review_date}
+                            </div>
+                            ${review.comment ? `<p style="color: #444; margin-top: 0.5rem;">${review.comment}</p>` : ''}
+                        </div>
+                    `;
+                    reviewsList.insertAdjacentHTML('beforeend', reviewCard);
+                });
+            } else {
+                reviewsList.innerHTML = '<div class="card" id="noReviews" style="padding: 2rem; text-align: center; color: #666;"><p style="margin: 0;">No reviews yet. Be the first to review this product!</p></div>';
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error loading reviews:', error);
+    });
+}
+</script>
+
+<style>
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.star {
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.star:hover {
+    transform: scale(1.2);
+}
+
+.review-card {
+    transition: all 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+</style>
+
+</body>
+</html>
